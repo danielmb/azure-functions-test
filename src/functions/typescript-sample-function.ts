@@ -39,3 +39,9 @@ app.http('typescript-sample-function', {
   authLevel: 'anonymous',
   handler: typescriptSampleFunction,
 });
+
+app.http('jobb-vennlig', {
+  methods: ['GET', 'POST'],
+  authLevel: 'anonymous',
+  handler: jobbVennlig,
+});
