@@ -7,7 +7,7 @@ import {
   output,
 } from '@azure/functions';
 import { z } from 'zod';
-import { Prisma } from '@prisma/client';
+
 const sqlInput = input.sql({
   commandText: 'SELECT * FROM dbo.navn',
   commandType: 'Text',
