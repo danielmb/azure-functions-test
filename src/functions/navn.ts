@@ -8,6 +8,8 @@ import {
 } from '@azure/functions';
 import { z } from 'zod';
 
+import { db } from '../lib/db';
+
 const sqlInput = input.sql({
   commandText: 'SELECT * FROM dbo.navn',
   commandType: 'Text',
@@ -23,10 +25,10 @@ const GET = async (
   request: HttpRequest,
   context: InvocationContext,
 ): Promise<HttpResponseInit> => {
+  const navn = await db.navn.findMany();
   const items = context.extraInputs.get(sqlInput);
-
   return {
-    jsonBody: items,
+    jsonBody: navn,
   };
 };
 
