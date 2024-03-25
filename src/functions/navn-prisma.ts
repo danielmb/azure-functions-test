@@ -3,28 +3,16 @@ import {
   HttpRequest,
   HttpResponseInit,
   InvocationContext,
-  input,
-  output,
 } from '@azure/functions';
 import { z } from 'zod';
-import { Prisma } from '@prisma/client';
-const sqlInput = input.sql({
-  commandText: 'SELECT * FROM dbo.navn',
-  commandType: 'Text',
-  connectionStringSetting: 'SqlConnectionString',
-});
-
-const sqlOutput = output.sql({
-  commandText: 'dbo.navn',
-  connectionStringSetting: 'SqlConnectionString',
-});
+import { Prisma, PrismaClient } from '@prisma/client';
+const db = new PrismaClient();
 
 const GET = async (
   request: HttpRequest,
   context: InvocationContext,
 ): Promise<HttpResponseInit> => {
-  const items = context.extraInputs.get(sqlInput);
-
+  const items = await db.navn.findMany();
   return {
     jsonBody: items,
   };
@@ -41,12 +29,14 @@ export const POST = async (
     })
     .parse(await request.json());
 
-  context.extraOutputs.set(sqlOutput, {
-    fornavn: body.fornavn,
-    etternavn: body.etternavn,
+  const item = await db.navn.create({
+    data: {
+      fornavn: body.fornavn,
+      etternavn: body.etternavn,
+    },
   });
-
   return {
+    jsonBody: item,
     status: 201, // Created
   };
 };
@@ -66,10 +56,8 @@ export async function hentNavner(
   };
 }
 
-app.http('navn', {
+app.http('navn-prisma', {
   methods: ['GET', 'POST'],
   authLevel: 'anonymous',
   handler: hentNavner,
-  extraInputs: [sqlInput],
-  extraOutputs: [sqlOutput],
 });
