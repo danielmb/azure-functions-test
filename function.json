@@ -1,0 +1,11 @@
+{
+  "bindings": [
+    {
+      "type": "sql",
+      "direction": "out",
+      "name": "navn",
+      "commandText": "dbo.whatever",
+      "connectionStringSetting": "SqlConnectionString"
+    }
+  ]
+}
