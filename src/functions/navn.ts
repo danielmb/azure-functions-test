@@ -25,10 +25,9 @@ const GET = async (
   request: HttpRequest,
   context: InvocationContext,
 ): Promise<HttpResponseInit> => {
-  const navn = await db.navn.findMany();
   const items = context.extraInputs.get(sqlInput);
   return {
-    jsonBody: navn,
+    jsonBody: items,
   };
 };
 

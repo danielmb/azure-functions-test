@@ -4,12 +4,42 @@ generator client {
 }
 
 datasource db {
-  provider = "sqlserver"
-  url      = env("DATABASE_URL")
+  provider          = "sqlserver"
+  url               = env("DATABASE_URL")
+  shadowDatabaseUrl = env("SHADOW_DATABASE_URL")
 }
 
-model Navn {
-  id        Int    @id @default(autoincrement())
-  fornavn   String
-  etternavn String
+model Name {
+  id         Int     @id @default(autoincrement())
+  firstName  String
+  middleName String?
+  lastName   String
+  Users      Users[]
+}
+
+model Address {
+  id     Int     @id @default(autoincrement())
+  street String
+  city   String
+  zip    String
+  Users  Users[]
+}
+
+model Post {
+  id    Int    @id @default(autoincrement())
+  title String
+  body  String
+
+  creator   Users @relation(fields: [creatorId], references: [id])
+  creatorId Int
+}
+
+model Users {
+  id        Int  @id @default(autoincrement())
+  nameId    Int
+  addressId Int?
+
+  name    Name     @relation(fields: [nameId], references: [id])
+  address Address? @relation(fields: [addressId], references: [id])
+  posts   Post[]
 }

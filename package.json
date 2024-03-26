@@ -9,6 +9,7 @@
     "prestart": "npm run clean && npm run build",
     "start": "func start",
     "prisma:generate": "prisma generate",
+    "prisma:migrate:prod": "prisma migrate deploy --preview-feature",
     "test": "echo \"No tests yet....\""
   },
   "dependencies": {

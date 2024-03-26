@@ -12,7 +12,8 @@ const GET = async (
   request: HttpRequest,
   context: InvocationContext,
 ): Promise<HttpResponseInit> => {
-  const items = await db.navn.findMany();
+  const items = await db.users.findMany();
+
   return {
     jsonBody: items,
   };
@@ -24,24 +25,30 @@ export const POST = async (
 ): Promise<HttpResponseInit> => {
   const body = z
     .object({
-      fornavn: z.string(),
-      etternavn: z.string(),
+      firstName: z.string(),
+      middleName: z.string().optional(),
+      lastName: z.string(),
     })
     .parse(await request.json());
 
-  const item = await db.navn.create({
+  const user = await db.users.create({
     data: {
-      fornavn: body.fornavn,
-      etternavn: body.etternavn,
+      name: {
+        create: {
+          firstName: body.firstName,
+          middleName: body.middleName,
+          lastName: body.lastName,
+        },
+      },
     },
   });
   return {
-    jsonBody: item,
+    jsonBody: user,
     status: 201, // Created
   };
 };
 
-export async function hentNavner(
+export async function getUsers(
   request: HttpRequest,
   context: InvocationContext,
 ): Promise<HttpResponseInit> {
@@ -56,8 +63,8 @@ export async function hentNavner(
   };
 }
 
-app.http('navn-prisma', {
+app.http('users', {
   methods: ['GET', 'POST'],
   authLevel: 'anonymous',
-  handler: hentNavner,
+  handler: getUsers,
 });
